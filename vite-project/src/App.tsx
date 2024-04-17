@@ -1,15 +1,66 @@
+import { Text, VStack } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { Layout } from "./Components/Layout";
+import { defaultFolderData, itemList } from "./Data/FolderData";
 import DraggableItem from "./DragAndDrop/DraggableItem";
 import GroupedFolderItems from "./DragAndDrop/GroupedFolderItems";
-import { Text } from "@chakra-ui/react";
+import { FolderDataType, ItemType } from "./Types";
 
 function App() {
+  const [items, setItems] = useState<ItemType[]>(itemList);
+
+  const [value, setValue] = useState("");
+
+  const [folderData, setFolderData] =
+    useState<FolderDataType[]>(defaultFolderData);
+
+  const handleDrop = (value: ItemType, folder: FolderDataType) => {
+    const temp = [...folderData];
+    let res;
+    const folderIndex = temp.findIndex((v) => v.id === folder.id);
+
+    if (folderIndex !== -1) {
+      res = temp.map((folder, index) =>
+        index === folderIndex
+          ? { ...folder, children: [...folder.children, value] }
+          : folder
+      );
+      setFolderData(res);
+    }
+    setItems((prev) => prev.filter((c) => c.id != value.id));
+  };
+
+  useEffect(() => {
+    const searchText = value.toLowerCase().trim();
+    const updatedSearch = searchText
+      ? items.filter((v) => v.name.includes(searchText))
+      : itemList;
+    setItems(updatedSearch);
+  }, [items, value]);
+
   return (
     <Layout
       header={<Text>Marvin Assingnent</Text>}
-      left={<GroupedFolderItems />}
+      left={
+        <GroupedFolderItems
+          folderData={folderData}
+          onDrop={(value, folder) => handleDrop(value, folder)}
+          value={value}
+          handleChange={(e) => setValue(e.target.value)}
+        />
+      }
     >
-      <DraggableItem />
+      {items.length ? (
+        items.map((v) => {
+          return <DraggableItem key={v.id} item={v} />;
+        })
+      ) : (
+        <VStack w="full" h="full" justifyContent="center" alignItems="center">
+          <Text fontSize="20px" fontWeight="700">
+            No Items to Show
+          </Text>
+        </VStack>
+      )}
     </Layout>
   );
 }

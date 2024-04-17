@@ -7,24 +7,62 @@ import {
   Box,
   HStack,
   Icon,
-  VStack,
+  Input,
+  InputGroup,
+  InputLeftElement,
   Text,
+  VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
-import { defaultFolderData } from "../Data/FolderData";
-import { FolderDataType, ItemType } from "../Types";
+import { BiSearch } from "react-icons/bi";
 import { FaFolder, FaFolderOpen } from "react-icons/fa";
+import { FolderDataType, ItemType } from "../Types";
 
-const GroupedFolderItems = () => {
-  const [folderData, setFolderdata] =
-    useState<FolderDataType[]>(defaultFolderData);
+const GroupedFolderItems = ({
+  folderData,
+  onDrop,
+  value,
+  handleChange,
+}: {
+  folderData: FolderDataType[];
+  onDrop: (value: ItemType, folder: FolderDataType) => void;
+  value: string;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) => {
+  const handleDrop = (
+    event: React.DragEvent<HTMLDivElement>,
+    folder: FolderDataType
+  ) => {
+    event.preventDefault();
+    const droppedItem = JSON.parse(event.dataTransfer.getData("text/plain"));
+    onDrop(droppedItem, folder);
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
 
   return (
-    <VStack w="full" h="full">
+    <VStack w="full" h="full" padding="4px">
+      <InputGroup>
+        <InputLeftElement pointerEvents="none">
+          <BiSearch color="gray.300" />
+        </InputLeftElement>
+        <Input
+          bgColor="white"
+          value={value}
+          borderRadius="20px"
+          placeholder="Search..."
+          onChange={handleChange}
+        />
+      </InputGroup>
       {folderData.map((folder) => {
         return (
           <Accordion w="full" defaultIndex={[0]} allowMultiple>
-            <AccordionItem border="none">
+            <AccordionItem
+              border="none"
+              onDrop={(e) => handleDrop(e, folder)}
+              onDragOver={handleDragOver}
+            >
               <AccordionButton
                 borderRadius="16px"
                 _expanded={{
@@ -38,6 +76,11 @@ const GroupedFolderItems = () => {
                 <Box as="span" flex="1" textAlign="left">
                   {folder.folderName}
                 </Box>
+                <Text
+                  fontSize="14px"
+                  fontFamily="600"
+                  fontStyle="normal"
+                >{`(${folder.children.length} items)`}</Text>
               </AccordionButton>
               <AccordionPanel paddingLeft="40px">
                 {folder.children.map((item) => {

@@ -17,7 +17,7 @@ export const Layout = ({
         <title>Draggable-folder</title>
         <meta name="viewport" content="initial-scale=1.0, width=1440" />
       </Helmet>
-      <VStack w="full" justify="center" align="start" height="50px" p="0 10px">
+      <VStack w="full" justify="center" align="start" minHeight="60px" p="20px">
         <Text
           fontWeight="600"
           color="gray.800"

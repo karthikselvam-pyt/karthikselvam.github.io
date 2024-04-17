@@ -34,43 +34,31 @@ export const defaultFolderData: FolderDataType[] = [
 
 export const itemList: ItemType[] = [
   {
-    id: 1,
+    id: 111,
     name: "List item 1",
   },
   {
-    id: 2,
+    id: 222,
     name: "List item 2",
   },
   {
-    id: 3,
+    id: 333,
     name: "List item 3",
   },
   {
-    id: 4,
+    id: 444,
     name: "List item 4",
   },
   {
-    id: 5,
+    id: 555,
     name: "List item 5",
   },
   {
-    id: 6,
+    id: 666,
     name: "List item 6",
   },
   {
-    id: 7,
+    id: 777,
     name: "List item 7",
-  },
-  {
-    id: 8,
-    name: "List item 8",
-  },
-  {
-    id: 9,
-    name: "List item 9",
-  },
-  {
-    id: 10,
-    name: "List item 10",
   },
 ];
