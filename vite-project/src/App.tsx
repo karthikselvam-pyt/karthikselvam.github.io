@@ -1,5 +1,5 @@
 import { Text, VStack } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Layout } from "./Components/Layout";
 import { defaultFolderData, itemList } from "./Data/FolderData";
 import DraggableItem from "./DragAndDrop/DraggableItem";
@@ -30,13 +30,17 @@ function App() {
     setItems((prev) => prev.filter((c) => c.id != value.id));
   };
 
-  useEffect(() => {
-    const searchText = value.toLowerCase().trim();
-    const updatedSearch = searchText
-      ? items.filter((v) => v.name.includes(searchText))
-      : itemList;
-    setItems(updatedSearch);
-  }, [items, value]);
+  const handleChange = useCallback(
+    (value: string) => {
+      setValue(value);
+      const searchText = value.toLowerCase().trim();
+      const updatedSearch = searchText
+        ? items.filter((v) => v.name.includes(searchText))
+        : itemList;
+      setItems(updatedSearch);
+    },
+    [items]
+  );
 
   return (
     <Layout
@@ -46,7 +50,7 @@ function App() {
           folderData={folderData}
           onDrop={(value, folder) => handleDrop(value, folder)}
           value={value}
-          handleChange={(e) => setValue(e.target.value)}
+          handleChange={(e) => handleChange(e.target.value)}
         />
       }
     >
